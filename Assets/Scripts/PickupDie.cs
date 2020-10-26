@@ -19,7 +19,9 @@ public class PickupDie : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        animator.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         animator.gameObject.SetActive(false);
+        PoolManager.instance.CollectDeathPickup(animator.gameObject);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

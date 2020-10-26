@@ -9,6 +9,21 @@ public class PoolManager : MonoBehaviour
     private Queue<GameObject> m_pickupsPool;
     private List<GameObject> m_activePickup;
 
+    public static PoolManager instance = null;
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Init()
     {
         m_activePickup = new List<GameObject>();
@@ -33,11 +48,13 @@ public class PoolManager : MonoBehaviour
             var obj = m_pickupsPool.Dequeue();
             obj.SetActive(true);
             m_activePickup.Add(obj);
+            obj.GetComponent<BoxCollider>().enabled = true;
             return obj;
         }
 
         var free = Instantiate(m_pickup, transform);
         free.SetActive(true);
+        free.GetComponent<BoxCollider>().enabled = true;
         m_activePickup.Add(free);
         return free;
 
@@ -58,10 +75,14 @@ public class PoolManager : MonoBehaviour
         obj.GetComponent<Animator>().SetTrigger("Death");
         var a = obj.GetComponent<BoxCollider>();
         a.enabled = false;
-        if(m_activePickup.Remove(obj))
-        {
-            m_pickupsPool.Enqueue(obj);
-        }
+        m_activePickup.Remove(obj);
+
+    }
+
+    public void CollectDeathPickup(GameObject obj)
+    {
+        
+        m_pickupsPool.Enqueue(obj);
     }
 
     // Update is called once per frame
