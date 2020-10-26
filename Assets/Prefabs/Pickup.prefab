@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 4336140674308416067}
   - component: {fileID: 4336140674308416068}
   - component: {fileID: 821060403695377955}
-  - component: {fileID: 7611410145862624192}
   - component: {fileID: 2909318333615150159}
+  - component: {fileID: 16554499962155053}
   m_Layer: 0
   m_Name: Pickup
   m_TagString: Pickup
@@ -112,22 +112,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!111 &7611410145862624192
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4336140674308416071}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: ebc835bfd5d06f745b3419083b472637, type: 2}
-  m_Animations:
-  - {fileID: 0}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!95 &2909318333615150159
 Animator:
   serializedVersion: 3
@@ -147,3 +131,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &16554499962155053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4336140674308416071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84f74d05e2f21b14f8f4686f93ca6b36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
