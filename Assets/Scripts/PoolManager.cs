@@ -54,7 +54,10 @@ public class PoolManager : MonoBehaviour
     }
     public void DestroyPickup(GameObject obj)
     {
-        obj.SetActive(false);
+        //obj.SetActive(false);
+        obj.GetComponent<Animator>().SetTrigger("Death");
+        var a = obj.GetComponent<BoxCollider>();
+        a.enabled = false;
         if(m_activePickup.Remove(obj))
         {
             m_pickupsPool.Enqueue(obj);

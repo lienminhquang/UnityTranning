@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public GameObject m_pickupPool;
     private PoolManager m_poolManager;
     public PlayerSphereController playerSphereController;
-    public float timeToTranslateToIdle = 0.5f;
+    public float timeToTranslateToIdle = 1.0f;
     private float timeToTranslateToIdleCounter = 0.0f;
 
     // Start is called before the first frame update
