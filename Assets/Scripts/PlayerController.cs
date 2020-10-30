@@ -5,17 +5,29 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public float m_moveSpeed;
+    public float m_moveSpeed = 0.02f;
     private Rigidbody m_rigidbody;
-    private int m_score;
     public Text m_text;
     public Text m_winText;
 
     public GameObject m_pickupPool;
     private PoolManager m_poolManager;
-    public PlayerSphereController playerSphereController;
-    public float timeToTranslateToIdle = 1.0f;
-    private float timeToTranslateToIdleCounter = 0.0f;
+    private Animator animator;
+    public static int maxHeal = 50;
+    public int m_heal = maxHeal;
+    public int m_dangerDamage = 30;
+    private GameObject m_pullingTarget = null;
+    private BoxCollider m_boxCollider = null;
+
+    public enum Stage
+    {
+        Unknown,
+        Pulling,
+        Dying,
+        Falling,
+        Landding
+    }
+    public Stage m_stage = Stage.Unknown;
 
     // Start is called before the first frame update
     void Start()
@@ -23,76 +35,151 @@ public class PlayerController : MonoBehaviour
         m_poolManager = m_pickupPool.GetComponent<PoolManager>();
 
         m_rigidbody = GetComponent<Rigidbody>();
-        m_moveSpeed = 0.2f;
+        m_boxCollider = GetComponent<BoxCollider>();
 
-        m_score = 0;
-        SetScoreText();
-
+        m_heal = maxHeal;
+        m_text.text = "Heal: " + m_heal.ToString();
         m_winText.text = "";
+
+        animator = GetComponent<Animator>();
+        m_stage = Stage.Unknown;
+        Respawn();
     }
 
-    void SetScoreText()
-    {
-        m_text.text = "Score: " + m_score.ToString();
-    }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
     }
 
     void FixedUpdate()
     {
-        GameObject target = m_poolManager.GetTarget();
-        if(target != null)
+        switch (m_stage)
         {
-            if (playerSphereController.boucing == true)
-            {
-                playerSphereController.rollRequested = true;
-            }
-            else
-            {
-                Vector3 move = (target.transform.position - transform.position).normalized * m_moveSpeed;
-                //transform.Translate(move);
-                m_rigidbody.MovePosition(transform.position + move * m_moveSpeed);
-                transform.LookAt(target.transform, new Vector3(0f, 1f, 0f));
-            }
+            case Stage.Unknown:
+                GameObject target = m_poolManager.GetTarget();
+                if (target != null)
+                {
+                    Vector3 targetPos = target.transform.position;
+                    targetPos.y = 0.0f;
+                    transform.LookAt(targetPos, new Vector3(0f, 1f, 0f));
+                    animator.SetFloat("Speed", 1);
+                }
+                else
+                {
+                    animator.SetFloat("Speed", 0);
+                }
+                break;
+            case Stage.Pulling:
+                break;
+            case Stage.Falling:
+                var pos = transform.position;
+                if(pos.y > 0)
+                {
+                    Vector3 move = (pos - new Vector3(0f, 1f, 0f) * m_moveSpeed);
+                    
+                    m_rigidbody.MovePosition(move);
+                }
+                else
+                {
+                    transform.position = new Vector3(pos.x, 0f, pos.z);
+                    animator.SetTrigger("Landing");
+                    m_stage = Stage.Landding;
+                }
+                break;
+            default:
+                break;
         }
-
     }
 
     private void LateUpdate()
     {
-        if(m_rigidbody.velocity.sqrMagnitude <= float.Epsilon && playerSphereController.boucing == false)
-        {
-            timeToTranslateToIdleCounter += Time.deltaTime;
-            if(timeToTranslateToIdleCounter >= timeToTranslateToIdle)
-            {
-                playerSphereController.SetIdle();
-                timeToTranslateToIdleCounter = 0f;
-            }
-        }
-        else
-        {
-            timeToTranslateToIdleCounter = 0f;
-        }
+
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Pickup"))
+        switch (m_stage)
         {
-            m_poolManager.DestroyPickup(other.gameObject);
+            case Stage.Unknown:
+                animator.SetFloat("Speed", 0);
+                if (other.gameObject.CompareTag("Pickup"))
+                {
+                    if (other.gameObject.GetComponent<PickupController>().m_Type == PickupController.Type.Danger)
+                    {
+                        m_poolManager.DestroyPickup(other.gameObject);
+                        animator.SetTrigger("Hit");
+                        m_heal -= m_dangerDamage;
+                       
 
-            m_score++;
-            SetScoreText();
+                        if (m_heal <= 0)
+                        {
+                            m_stage = Stage.Dying;
+                            m_boxCollider.enabled = false;
+                            m_heal = 0;
+                            animator.SetTrigger("Die");
+                        }
 
-            //if(m_score >= 5)
-            //{
-            //    m_winText.text = "You Win!";
-            //}
+                        m_text.text = "Heal: " + m_heal.ToString();
+                        return;
+                    }
+                    else
+                    {
+                        animator.SetTrigger("Pulling");
+                        m_pullingTarget = other.gameObject;
+                        m_stage = Stage.Pulling;
+                        m_boxCollider.enabled = false;
+                    }
+                }
+                
+                break;
+            case Stage.Pulling:
+                break;
+            default:
+                break;
+        }
+        
+    }
+
+    public void Respawn()
+    {
+        m_heal = maxHeal;
+        m_text.text = "Heal: " + m_heal.ToString();
+
+        m_boxCollider.enabled = false;
+        transform.position = new Vector3(0f, 30f, 0f);
+        animator.SetTrigger("Falling");
+        m_stage = Stage.Falling;
+    }
+
+    public void PullingSuccess()
+    {
+        if(m_pullingTarget != null)
+        {
+            m_poolManager.DestroyPickup(m_pullingTarget);
+            m_pullingTarget = null;
+            m_boxCollider.enabled = true;
+            m_stage = Stage.Unknown;
         }
     }
+
+    public void LandingSuccess()
+    {
+        m_boxCollider.enabled = true;
+        m_stage = Stage.Unknown;
+        //transform.position = new Vector3(0f, 0f, 0f);
+    }
+
+    public void DyingFinished()
+    {
+        m_boxCollider.enabled = true;
+        m_stage = Stage.Landding;
+        Respawn();
+    }
+
 }
