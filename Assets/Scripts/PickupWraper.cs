@@ -7,6 +7,7 @@ public class PickupWraper : MonoBehaviour
 
     public GameObject m_pickUp;
     public GameObject m_pSFire;
+    public GameObject m_explosionEffect;
     // Start is called before the first frame update
     void Start()
     {

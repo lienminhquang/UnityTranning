@@ -22,6 +22,7 @@ public class PickupDie : StateMachineBehaviour
         animator.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         animator.gameObject.transform.parent.gameObject.SetActive(false);
         PoolManager.instance.CollectDeathPickup(animator.gameObject.transform.parent.gameObject);
+        animator.gameObject.transform.parent.gameObject.GetComponent<PickupWraper>().m_explosionEffect.GetComponent<ParticleSystem>().Stop();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

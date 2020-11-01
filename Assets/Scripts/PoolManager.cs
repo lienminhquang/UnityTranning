@@ -73,9 +73,16 @@ public class PoolManager : MonoBehaviour
 
         return null;
     }
-    public void DestroyPickup(GameObject obj)
+    public void DestroyPickup(GameObject obj, bool isDanger)
     {
         //obj.SetActive(false);
+        
+        if(isDanger)
+        {
+            obj.transform.parent.gameObject.GetComponent<PickupWraper>().m_pSFire.GetComponent<ParticleSystem>().Stop();
+            obj.transform.parent.gameObject.GetComponent<PickupWraper>().m_explosionEffect.GetComponent<ParticleSystem>().Play();
+        }
+
         obj.GetComponent<Animator>().SetTrigger("Death");
         var a = obj.GetComponent<BoxCollider>();
         a.enabled = false;

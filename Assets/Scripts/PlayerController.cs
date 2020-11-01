@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
                 {
                     if (other.gameObject.GetComponent<PickupController>().m_Type == PickupController.Type.Danger)
                     {
-                        m_poolManager.DestroyPickup(other.gameObject);
+                        m_poolManager.DestroyPickup(other.gameObject, true);
                         animator.SetTrigger("Hit");
                         m_heal -= m_dangerDamage;
                        
@@ -161,7 +161,7 @@ public class PlayerController : MonoBehaviour
     {
         if(m_pullingTarget != null)
         {
-            m_poolManager.DestroyPickup(m_pullingTarget);
+            m_poolManager.DestroyPickup(m_pullingTarget, false);
             m_pullingTarget = null;
             m_boxCollider.enabled = true;
             m_stage = Stage.Unknown;
