@@ -48,7 +48,9 @@ public class PoolManager : MonoBehaviour
             var obj = m_pickupsPool.Dequeue();
             obj.SetActive(true);
             m_activePickup.Add(obj);
-            obj.GetComponent<BoxCollider>().enabled = true;
+            var pickupw = obj.GetComponent<PickupWraper>();
+            var pickup =  pickupw.m_pickUp;
+            pickup.GetComponent<BoxCollider>().enabled = true;
             return obj;
         }
 
