@@ -20,8 +20,8 @@ public class PickupDie : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        animator.gameObject.SetActive(false);
-        PoolManager.instance.CollectDeathPickup(animator.gameObject);
+        animator.gameObject.transform.parent.gameObject.SetActive(false);
+        PoolManager.instance.CollectDeathPickup(animator.gameObject.transform.parent.gameObject);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

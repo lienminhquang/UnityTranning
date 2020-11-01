@@ -50,13 +50,15 @@ public class PoolManager : MonoBehaviour
             m_activePickup.Add(obj);
             var pickupw = obj.GetComponent<PickupWraper>();
             var pickup =  pickupw.m_pickUp;
+            pickup.GetComponent<PickupController>().ReRandomType();
             pickup.GetComponent<BoxCollider>().enabled = true;
             return obj;
         }
 
         var free = Instantiate(m_pickup, transform);
         free.SetActive(true);
-        free.GetComponent<BoxCollider>().enabled = true;
+        free.GetComponent<PickupWraper>().m_pickUp.GetComponent<PickupController>().ReRandomType();
+        free.GetComponent<PickupWraper>().m_pickUp.GetComponent<BoxCollider>().enabled = true;
         m_activePickup.Add(free);
         return free;
 
@@ -77,7 +79,7 @@ public class PoolManager : MonoBehaviour
         obj.GetComponent<Animator>().SetTrigger("Death");
         var a = obj.GetComponent<BoxCollider>();
         a.enabled = false;
-        m_activePickup.Remove(obj);
+        m_activePickup.Remove(obj.transform.parent.gameObject);
 
     }
 
