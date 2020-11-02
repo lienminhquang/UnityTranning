@@ -19,13 +19,20 @@ public class PlayerController : MonoBehaviour
     private GameObject m_pullingTarget = null;
     private BoxCollider m_boxCollider = null;
 
+    public GameObject m_cloth;
+    public GameObject m_body;
+    public Material m_normalClothMat;
+    public Material m_normalBodyMat;
+    public Material m_dissolveMat;
+
     public enum Stage
     {
         Unknown,
         Pulling,
         Dying,
         Falling,
-        Landding
+        DyingEffect,
+        Landding,
     }
     public Stage m_stage = Stage.Unknown;
 
@@ -91,6 +98,17 @@ public class PlayerController : MonoBehaviour
                     m_stage = Stage.Landding;
                 }
                 break;
+            case Stage.DyingEffect:
+                {
+                    if(m_body.GetComponent<SpawnEffect>().isPlaying == false && m_cloth.GetComponent<SpawnEffect>().isPlaying == false)
+                    {
+                        m_body.GetComponent<SkinnedMeshRenderer>().material = m_normalBodyMat;
+                        m_cloth.GetComponent<SkinnedMeshRenderer>().material = m_normalClothMat;
+                        
+                        Respawn();
+                    }
+                    break;
+                }
             default:
                 break;
         }
@@ -152,7 +170,7 @@ public class PlayerController : MonoBehaviour
         m_text.text = "Heal: " + m_heal.ToString();
 
         m_boxCollider.enabled = false;
-        transform.position = new Vector3(0f, 30f, 0f);
+        transform.position = new Vector3(0f, 15f, 0f);
         animator.SetTrigger("Falling");
         m_stage = Stage.Falling;
     }
@@ -177,9 +195,13 @@ public class PlayerController : MonoBehaviour
 
     public void DyingFinished()
     {
-        m_boxCollider.enabled = true;
-        m_stage = Stage.Landding;
-        Respawn();
+        
+        m_body.GetComponent<SkinnedMeshRenderer>().material = m_dissolveMat;
+        m_body.GetComponent<SpawnEffect>().StartEffect(); 
+        m_cloth.GetComponent<SkinnedMeshRenderer>().material = m_dissolveMat;
+        m_cloth.GetComponent<SpawnEffect>().StartEffect();
+        m_stage = Stage.DyingEffect;
+        //Respawn();
     }
 
 }

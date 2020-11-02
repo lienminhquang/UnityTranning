@@ -22,6 +22,7 @@ public class PickupController : MonoBehaviour
     public void ReRandomType()
     {
         int color = Random.Range(0, 3);
+        //color = 1;
 
         m_Type = color == 1 ? Type.Danger : Type.Normal;
         print(color);

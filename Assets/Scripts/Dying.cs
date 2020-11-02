@@ -19,7 +19,7 @@ public class Dying : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       // animator.gameObject.GetComponent<PlayerController>().DyingFinished();
+       //animator.gameObject.GetComponent<PlayerController>().DyingFinished();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
