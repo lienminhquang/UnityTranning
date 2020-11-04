@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
         Falling,
         DyingEffect,
         Landding,
+        //Free,
     }
     public Stage m_stage = Stage.Unknown;
 
@@ -134,13 +135,9 @@ public class PlayerController : MonoBehaviour
                         animator.SetTrigger("Hit");
                         m_heal -= m_dangerDamage;
                        
-
                         if (m_heal <= 0)
                         {
-                            m_stage = Stage.Dying;
-                            m_boxCollider.enabled = false;
-                            m_heal = 0;
-                            animator.SetTrigger("Die");
+                            Die();
                         }
 
                         m_text.text = "Heal: " + m_heal.ToString();
@@ -164,15 +161,27 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    private void Die()
+    {
+        m_stage = Stage.Dying;
+        m_boxCollider.enabled = false;
+        m_heal = 0;
+        animator.SetTrigger("Die");
+        PoolManager.instance.SetEnableSpawnPickup(false);
+    }
+
     public void Respawn()
     {
         m_heal = maxHeal;
         m_text.text = "Heal: " + m_heal.ToString();
 
         m_boxCollider.enabled = false;
+        transform.rotation = Quaternion.identity;
         transform.position = new Vector3(0f, 15f, 0f);
         animator.SetTrigger("Falling");
         m_stage = Stage.Falling;
+
+        CutsceneManager.instantiate.PlayPlaerRespawnCutscene();
     }
 
     public void PullingSuccess()

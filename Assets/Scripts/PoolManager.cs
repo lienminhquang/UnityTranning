@@ -10,6 +10,7 @@ public class PoolManager : MonoBehaviour
     private List<GameObject> m_activePickup;
 
     public static PoolManager instance = null;
+    private bool enableSpawnPickup = false;
 
     private void Awake()
     {
@@ -96,24 +97,30 @@ public class PoolManager : MonoBehaviour
         m_pickupsPool.Enqueue(obj);
     }
 
+    public void SetEnableSpawnPickup(bool isEnable)
+    {
+        enableSpawnPickup = isEnable;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if(enableSpawnPickup)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if (Input.GetButtonDown("Fire1"))
             {
-                if (hit.collider.gameObject.CompareTag("Ground"))
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit))
                 {
-                    Vector3 position = hit.point;
-                    position.y = 0.5f;
-                    GameObject obj = Spawn();
-                    obj.transform.position = position;
+                    if (hit.collider.gameObject.CompareTag("Ground"))
+                    {
+                        Vector3 position = hit.point;
+                        position.y = 0.5f;
+                        GameObject obj = Spawn();
+                        obj.transform.position = position;
+                    }
                 }
-
-                
             }
         }
     }
