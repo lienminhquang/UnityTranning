@@ -17,7 +17,7 @@ public class PoolManager : MonoBehaviour
         if(instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this);
+            //DontDestroyOnLoad(this);
         }
         else
         {
@@ -107,7 +107,7 @@ public class PoolManager : MonoBehaviour
     {
         if(enableSpawnPickup)
         {
-            if (Input.GetButtonDown("Fire1"))
+            if (Input.GetButtonDown("Fire1") && UIController.GamePaused == false)
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;

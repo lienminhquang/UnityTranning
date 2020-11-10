@@ -12,6 +12,8 @@ public class PickupController : MonoBehaviour
     }
 
     public Type m_Type = Type.Normal;
+    public bool RandomColor = true;
+    public int DefaultColor = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +23,12 @@ public class PickupController : MonoBehaviour
 
     public void ReRandomType()
     {
-        int color = Random.Range(0, 3);
+        int color = DefaultColor;
+        if (RandomColor)
+        {
+            color = Random.Range(0, 3);
+        }
+        
         //color = 1;
 
         m_Type = color == 1 ? Type.Danger : Type.Normal;

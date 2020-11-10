@@ -13,7 +13,7 @@ public class CutsceneManager : MonoBehaviour
         if(instantiate == null)
         {
             instantiate = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {
